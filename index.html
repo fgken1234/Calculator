@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      rel="icon"
+      type="image/png"
+      href="https://64.media.tumblr.com/0d4771178f9f08a2a02dbe5a8226edd7/000bfc4458fdb8ce-b7/s400x600/9ef8fd2411ed551eae34662a3160cca80f6d2da4.pnj"
+    />
+    <title>Calculator</title>
+
+    <!-- ==========STYLE========== -->
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+      }
+
+      #background {
+        background-image: url(https://64.media.tumblr.com/3682fd5c67a8310a78f3c067df83424e/edd7010cfe6b4687-da/s2048x3072/9e1b8a9480b570eabeea8e668afc24e4e3b75af4.gif);
+        width: 100%;
+        height: 100vh;
+        background-size: cover;
+        background-position: center;
+      }
+
+      #calculator {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 20px;
+        background-color: rgba(0, 0, 0, 0.4);
+        color: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        font-family: Arial, sans-serif;
+      }
+
+      input {
+        padding: 10px;
+        margin: 6px 0;
+        font-size: 12px;
+        width: 70px;
+        border-radius: 5px;
+        border: none;
+      }
+
+      #result,
+      #result2 {
+        font-weight: bold;
+        margin-top: 10px;
+      }
+    </style>
+
+    <!-- =========SCRIPT========== -->
+    <script>
+      function calculate() {
+        const inputValue1 = parseFloat(
+          document.getElementById('inputValue1').value
+        );
+        const inputValue2 = parseFloat(
+          document.getElementById('inputValue2').value
+        );
+        const result = document.getElementById('result');
+
+        if (isNaN(inputValue1) || isNaN(inputValue2) || inputValue2 === 0) {
+          result.innerHTML = 'Vui lòng nhập số hợp lệ (không chia cho 0).';
+        } else {
+          const calculatedValue = (inputValue1 / inputValue2 / 10).toFixed(2);
+          result.innerHTML = 'Lot: ' + calculatedValue;
+        }
+
+        const inputValue3 = parseFloat(
+          document.getElementById('inputValue3').value
+        );
+        const inputValue4 = parseFloat(
+          document.getElementById('inputValue4').value
+        );
+        const result2 = document.getElementById('result2');
+
+        if (!isNaN(inputValue3) && !isNaN(inputValue4)) {
+          const calculatedValue2 = (inputValue3 * (inputValue4 / 100)).toFixed(
+            2
+          );
+          result2.innerHTML = 'Tiền lỗ: - $' + calculatedValue2;
+        } else {
+          result2.innerHTML = '';
+        }
+      }
+
+      // Định nghĩa các phiên giao dịch theo giờ địa phương Halifax (Nova Scotia)
+      const sessions = [
+        { name: 'Tokyo', start: 20, end: 4 },
+        { name: 'London', start: 3, end: 11 },
+        { name: 'New York', start: 8, end: 17 },
+      ];
+
+      function updateSessionInfo() {
+        const now = new Date();
+        const options = {
+          timeZone: 'America/Halifax',
+          hour12: false,
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+        };
+        const localTimeString = now.toLocaleTimeString('en-CA', options);
+        const [hour, minute, second] = localTimeString.split(':').map(Number);
+        const currentHour = hour + minute / 60 + second / 3600;
+
+        let sessionName = 'Không trong phiên chính';
+        let progress = 0;
+
+        for (const session of sessions) {
+          const start = session.start;
+          const end = session.end < start ? session.end + 24 : session.end;
+          const current = currentHour < start ? currentHour + 24 : currentHour;
+
+          if (current >= start && current <= end) {
+            sessionName = session.name;
+            progress = ((current - start) / (end - start)) * 100;
+            break;
+          }
+        }
+
+        document.getElementById('current-session').textContent =
+          'Phiên hiện tại: ' + sessionName;
+        document.getElementById('session-progress').style.width =
+          progress + '%';
+      }
+
+      // Cập nhật mỗi giây
+      setInterval(updateSessionInfo, 1000);
+      updateSessionInfo();
+
+      const backgrounds = [
+        'https://64.media.tumblr.com/3682fd5c67a8310a78f3c067df83424e/edd7010cfe6b4687-da/s2048x3072/9e1b8a9480b570eabeea8e668afc24e4e3b75af4.gif',
+        '',
+        'URL_3.gif',
+        // thêm URL gif khác vào đây
+      ];
+
+      let currentIndex = 0;
+      const bgElement = document.getElementById('background');
+
+      function changeBackground() {
+        bgElement.style.backgroundImage = `url(${backgrounds[currentIndex]})`;
+        currentIndex = (currentIndex + 1) % backgrounds.length;
+      }
+
+      // đổi ngay lúc load trang
+      changeBackground();
+
+      // đổi background mỗi 10 giây (10000 ms)
+      setInterval(changeBackground, 10800000);
+    </script>
+  </head>
+
+  <!-- ==========BODY========== -->
+  <body>
+    <div id="background"></div>
+    <div id="calculator">
+      <!-- BẢNG TÍNH 2 -->
+      <label for="inputValue3">Tiền vốn :</label>
+      <input type="number" id="inputValue3" oninput="calculate()" />
+
+      <label for="inputValue4">% Vị thế :</label>
+      <input type="number" id="inputValue4" oninput="calculate()" />
+
+      <div id="result2">Tiền lỗ: -</div>
+
+      <hr style="margin: 15px 0; border-color: rgba(255, 255, 255, 0.2)" />
+
+      <!-- BẢNG TÍNH 1 -->
+      <label for="inputValue1">Tiền lỗ : $</label>
+      <input type="number" id="inputValue1" oninput="calculate()" />
+
+      <label for="inputValue2">Pips SL :</label>
+      <input type="number" id="inputValue2" oninput="calculate()" />
+
+      <div id="result">Lot:</div>
+    </div>
+    <!-- ==========SESSION DISPLAY========== -->
+    <div
+      id="session-info"
+      style="
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        padding: 10px 15px;
+        border-radius: 10px;
+        font-family: Arial, sans-serif;
+        width: 250px;
+      "
+    >
+      <div id="current-session">Phiên hiện tại:</div>
+      <div
+        style="
+          background: rgba(255, 255, 255, 0.2);
+          height: 8px;
+          border-radius: 5px;
+          margin-top: 8px;
+        "
+      >
+        <div
+          id="session-progress"
+          style="
+            height: 8px;
+            background: limegreen;
+            border-radius: 5px;
+            width: 0%;
+          "
+        ></div>
+      </div>
+    </div>
+  </body>
+</html>
