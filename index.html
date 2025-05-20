@@ -91,15 +91,15 @@
 
       // Định nghĩa các phiên giao dịch theo giờ địa phương Halifax (Nova Scotia)
       const sessions = [
-        { name: 'Tokyo', start: 20, end: 4 },
-        { name: 'London', start: 3, end: 11 },
-        { name: 'New York', start: 8, end: 17 },
+        { name: 'Tokyo', start: 23, end: 8 },
+        { name: 'London', start: 7, end: 16 },
+        { name: 'New York', start: 12, end: 21 },
       ];
 
       function updateSessionInfo() {
         const now = new Date();
         const options = {
-          timeZone: 'America/Halifax',
+          timeZone: 'UTC',
           hour12: false,
           hour: '2-digit',
           minute: '2-digit',
