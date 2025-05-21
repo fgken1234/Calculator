@@ -35,6 +35,7 @@
         border-radius: 10px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
         font-family: Arial, sans-serif;
+        /* Bỏ max-width để không bóp hẹp box */
       }
 
       input {
@@ -47,7 +48,8 @@
       }
 
       #result,
-      #result2 {
+      #result2,
+      #result3 {
         font-weight: bold;
         margin-top: 10px;
       }
@@ -86,6 +88,20 @@
           result2.innerHTML = 'Tiền lỗ: - $' + calculatedValue2;
         } else {
           result2.innerHTML = '';
+        }
+
+        const vonCu = parseFloat(document.getElementById('vonCu').value);
+        const vonMoi = parseFloat(document.getElementById('vonMoi').value);
+        const result3 = document.getElementById('result3');
+
+        if (!isNaN(vonCu) && !isNaN(vonMoi) && vonCu !== 0) {
+          const balance = vonMoi - vonCu;
+          const percent = ((balance / vonCu) * 100).toFixed(2);
+          result3.innerHTML = `Lời/lỗ: ${balance.toFixed(2)} (${
+            percent > 0 ? '+' : ''
+          }${percent}%)`;
+        } else {
+          result3.innerHTML = '';
         }
       }
 
@@ -142,18 +158,15 @@
       ];
 
       let currentIndex = 0;
-      const bgElement = document.getElementById('background');
-
-      function changeBackground() {
-        bgElement.style.backgroundImage = `url(${backgrounds[currentIndex]})`;
-        currentIndex = (currentIndex + 1) % backgrounds.length;
-      }
-
-      // đổi ngay lúc load trang
-      changeBackground();
-
-      // đổi background mỗi 10 giây (10000 ms)
-      setInterval(changeBackground, 10800000);
+      window.onload = function () {
+        const bgElement = document.getElementById('background');
+        function changeBackground() {
+          bgElement.style.backgroundImage = `url(${backgrounds[currentIndex]})`;
+          currentIndex = (currentIndex + 1) % backgrounds.length;
+        }
+        changeBackground();
+        setInterval(changeBackground, 10800000);
+      };
     </script>
   </head>
 
@@ -180,7 +193,19 @@
       <input type="number" id="inputValue2" oninput="calculate()" />
 
       <div id="result">Lot:</div>
+
+      <hr style="margin: 15px 0; border-color: rgba(255, 255, 255, 0.2)" />
+
+      <!-- BẢNG TÍNH LỜI/LỖ -->
+      <label for="vonCu">Vốn cũ :</label>
+      <input type="number" id="vonCu" oninput="calculate()" />
+
+      <label for="vonMoi">Vốn mới :</label>
+      <input type="number" id="vonMoi" oninput="calculate()" />
+
+      <div id="result3">Lời/lỗ:</div>
     </div>
+
     <!-- ==========SESSION DISPLAY========== -->
     <div
       id="session-info"
