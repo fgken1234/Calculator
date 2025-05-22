@@ -9,7 +9,6 @@
     />
     <title>Calculator</title>
 
-    <!-- ==========STYLE========== -->
     <style>
       html,
       body {
@@ -35,35 +34,39 @@
         border-radius: 10px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
         font-family: Arial, sans-serif;
-        /* Bỏ max-width để không bóp hẹp box */
       }
 
       input {
         padding: 10px;
         margin: 6px 0;
-        font-size: 12px;
-        width: 70px;
+        font-size: 16px; /* Giữ chữ không bị co */
+        width: 80px;
         border-radius: 5px;
         border: none;
       }
 
+      input:focus {
+        font-size: 16px;
+        outline: none;
+      }
+
       #result,
       #result2,
-      #result3 {
+      #profit-result {
         font-weight: bold;
         margin-top: 10px;
       }
+
+      hr {
+        margin: 15px 0;
+        border-color: rgba(255, 255, 255, 0.2);
+      }
     </style>
 
-    <!-- =========SCRIPT========== -->
     <script>
       function calculate() {
-        const inputValue1 = parseFloat(
-          document.getElementById('inputValue1').value
-        );
-        const inputValue2 = parseFloat(
-          document.getElementById('inputValue2').value
-        );
+        const inputValue1 = parseFloat(document.getElementById('inputValue1').value);
+        const inputValue2 = parseFloat(document.getElementById('inputValue2').value);
         const result = document.getElementById('result');
 
         if (isNaN(inputValue1) || isNaN(inputValue2) || inputValue2 === 0) {
@@ -73,39 +76,30 @@
           result.innerHTML = 'Lot: ' + calculatedValue;
         }
 
-        const inputValue3 = parseFloat(
-          document.getElementById('inputValue3').value
-        );
-        const inputValue4 = parseFloat(
-          document.getElementById('inputValue4').value
-        );
+        const inputValue3 = parseFloat(document.getElementById('inputValue3').value);
+        const inputValue4 = parseFloat(document.getElementById('inputValue4').value);
         const result2 = document.getElementById('result2');
 
         if (!isNaN(inputValue3) && !isNaN(inputValue4)) {
-          const calculatedValue2 = (inputValue3 * (inputValue4 / 100)).toFixed(
-            2
-          );
+          const calculatedValue2 = (inputValue3 * (inputValue4 / 100)).toFixed(2);
           result2.innerHTML = 'Tiền lỗ: - $' + calculatedValue2;
         } else {
           result2.innerHTML = '';
         }
 
-        const vonCu = parseFloat(document.getElementById('vonCu').value);
-        const vonMoi = parseFloat(document.getElementById('vonMoi').value);
-        const result3 = document.getElementById('result3');
+        const oldCapital = parseFloat(document.getElementById('oldCapital').value);
+        const newCapital = parseFloat(document.getElementById('newCapital').value);
+        const profitResult = document.getElementById('profit-result');
 
-        if (!isNaN(vonCu) && !isNaN(vonMoi) && vonCu !== 0) {
-          const balance = vonMoi - vonCu;
-          const percent = ((balance / vonCu) * 100).toFixed(2);
-          result3.innerHTML = `Lời/lỗ: ${balance.toFixed(2)} (${
-            percent > 0 ? '+' : ''
-          }${percent}%)`;
+        if (!isNaN(oldCapital) && !isNaN(newCapital)) {
+          const balance = newCapital - oldCapital;
+          const percent = ((balance / oldCapital) * 100).toFixed(2);
+          profitResult.innerHTML = 'Lời/lỗ: ' + percent + ' %';
         } else {
-          result3.innerHTML = '';
+          profitResult.innerHTML = '';
         }
       }
 
-      // Định nghĩa các phiên giao dịch theo giờ địa phương Halifax (Nova Scotia)
       const sessions = [
         { name: 'Tokyo', start: 23, end: 8 },
         { name: 'London', start: 7, end: 16 },
@@ -146,31 +140,26 @@
           progress + '%';
       }
 
-      // Cập nhật mỗi giây
       setInterval(updateSessionInfo, 1000);
       updateSessionInfo();
 
       const backgrounds = [
         'https://64.media.tumblr.com/3682fd5c67a8310a78f3c067df83424e/edd7010cfe6b4687-da/s2048x3072/9e1b8a9480b570eabeea8e668afc24e4e3b75af4.gif',
-        '',
-        'URL_3.gif',
-        // thêm URL gif khác vào đây
       ];
 
       let currentIndex = 0;
-      window.onload = function () {
-        const bgElement = document.getElementById('background');
-        function changeBackground() {
-          bgElement.style.backgroundImage = `url(${backgrounds[currentIndex]})`;
-          currentIndex = (currentIndex + 1) % backgrounds.length;
-        }
-        changeBackground();
-        setInterval(changeBackground, 10800000);
-      };
+      const bgElement = document.getElementById('background');
+
+      function changeBackground() {
+        bgElement.style.backgroundImage = `url(${backgrounds[currentIndex]})`;
+        currentIndex = (currentIndex + 1) % backgrounds.length;
+      }
+
+      changeBackground();
+      setInterval(changeBackground, 10800000);
     </script>
   </head>
 
-  <!-- ==========BODY========== -->
   <body>
     <div id="background"></div>
     <div id="calculator">
@@ -183,7 +172,7 @@
 
       <div id="result2">Tiền lỗ: -</div>
 
-      <hr style="margin: 15px 0; border-color: rgba(255, 255, 255, 0.2)" />
+      <hr />
 
       <!-- BẢNG TÍNH 1 -->
       <label for="inputValue1">Tiền lỗ : $</label>
@@ -194,19 +183,18 @@
 
       <div id="result">Lot:</div>
 
-      <hr style="margin: 15px 0; border-color: rgba(255, 255, 255, 0.2)" />
+      <hr />
 
-      <!-- BẢNG TÍNH LỜI/LỖ -->
-      <label for="vonCu">Vốn cũ :</label>
-      <input type="number" id="vonCu" oninput="calculate()" />
+      <!-- TÍNH LỜI/LỖ -->
+      <label for="oldCapital">Vốn cũ :</label>
+      <input type="number" id="oldCapital" oninput="calculate()" />
 
-      <label for="vonMoi">Vốn mới :</label>
-      <input type="number" id="vonMoi" oninput="calculate()" />
+      <label for="newCapital">Vốn mới :</label>
+      <input type="number" id="newCapital" oninput="calculate()" />
 
-      <div id="result3">Lời / lỗ:</div>
+      <div id="profit-result">Lời/lỗ: </div>
     </div>
 
-    <!-- ==========SESSION DISPLAY========== -->
     <div
       id="session-info"
       style="
